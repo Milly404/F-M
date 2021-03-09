@@ -18,8 +18,8 @@ game_folder=os.path.dirname(__file__)
 img_folder=os.path.join(game_folder,"img")
 
 #background 背景
-brackground=pygame.image.load(os.path.join(img_folder,"background right.png"))
-brackground_rect=brackground.get_rect()
+background=pygame.image.load(os.path.join(img_folder,"background right.png"))
+background_rect=background.get_rect()
 
 #setup palyer 放入人物
 class Player(pygame.sprite.Sprite):
@@ -36,9 +36,18 @@ pygame.display.set_caption("FM207")
 clock=pygame.time.Clock()
 
 #run game 开始/菜单
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.quit():
-            sys.exit()
+running =True
+while running:
 
-screen.blit(brackground,brackground_rect)
+    #process inputs(events)
+    for event in pygame.event.get():
+        #close the window
+        if event.type == pygame.QUIT:
+            running =False
+
+    #draw /render
+    screen.blit(background,background_rect)
+
+    pygame.display.flip()
+pygame.quit()
+
