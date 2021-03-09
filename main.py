@@ -18,18 +18,18 @@ game_folder=os.path.dirname(__file__)
 img_folder=os.path.join(game_folder,"img")
 
 #background 背景照片
-background=pygame.image.load(os.path.join(img_folder,"background right.png"))
+background=pygame.image.load(os.path.join(img_folder,"background right1.png"))
 background_rect=background.get_rect()
 
 #setup palyer 放入人物
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load(os.path.join(img_folder,"WuKong 1.png")).convert()
+        self.image=pygame.image.load(os.path.join(img_folder,"WuKong 11.png")).convert()
 
 
 #player 人物照片
-ship=pygame.image.load(os.path.join(img_folder,"WuKong 1.png"))
+ship=pygame.image.load(os.path.join(img_folder,"WuKong 11.png"))
 ship_rect=ship.get_rect()
 
 #player=Player()
