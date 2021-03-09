@@ -35,4 +35,10 @@ screen=pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("FM207")
 clock=pygame.time.Clock()
 
+#run game
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.quit():
+            sys.exit()
+
 screen.blit(brackground,brackground_rect)
