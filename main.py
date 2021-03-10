@@ -29,9 +29,9 @@ icon = pygame.image.load(os.path.join(img_folder,"icon.png"))
 pygame.display.set_icon(icon)
 
 #player 人物照片导入
-WuKong1=pygame.image.load(os.path.join(img_folder,"WuKong 1.png"))
+WuKong1=pygame.image.load(os.path.join(img_folder,"WuKong 11.png"))
 WuKong1_rect=WuKong1.get_rect()
-
+Wukong=WUkong_x,Wukong_y=139,602   #7,602
 
 #initialize pygame and create window 创造窗口
 pygame.init()
@@ -50,9 +50,10 @@ while True:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE: #close the window with Esc
                 sys.exit()
-                if event.key == pygame.K_UP:
+            #if event.key == pygame.K_UP:
 
-                elif event.key == pygame.K_DOWN:
+            #elif event.key == pygame.K_DOWN:
+
 
         # 测试xy轴
         #elif event.type == pygame.MOUSEMOTION:#鼠标所在位置
@@ -71,7 +72,7 @@ while True:
     screen.blit(background,background_rect)
 
     #打印人物
-    screen.blit(WuKong1, WuKong1_rect)
+    screen.blit(WuKong1, Wukong)
 
     pygame.display.update()
     pygame.display.flip()
