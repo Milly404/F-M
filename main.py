@@ -35,9 +35,10 @@ WuKong1_rect=WuKong1.get_rect()
 
 #initialize pygame and create window 创造窗口
 pygame.init()
-screen=pygame.display.set_mode(size, pygame.RESIZABLE) #可移动的屏幕有机会再说
+#screen=pygame.display.set_mode(size, pygame.RESIZABLE) #可移动的屏幕有机会再说
 #screen=pygame.display.set_mode(size, pygame.NOFRAME)#无边框
 #screen=pygame.display.set_mode(size, pygame.FULLSCREEN) #诶嘿搞个全屏就快乐了
+screen=pygame.display.set_mode(size)
 pygame.display.set_caption("FM207") #give the game a name 给它个名字
 
 #run game 开始冲冲冲
@@ -49,10 +50,9 @@ while True:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE: #close the window with Esc
                 sys.exit()
+                if event.key == pygame.K_UP:
 
-                # if event.key == pygame.K_UP:
-
-                # elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN:
 
         # 测试xy轴
         #elif event.type == pygame.MOUSEMOTION:#鼠标所在位置
