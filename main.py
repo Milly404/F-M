@@ -33,6 +33,24 @@ WuKong1=pygame.image.load(os.path.join(img_folder,"WuKong 11.png"))
 WuKong1_rect=WuKong1.get_rect()
 Wukong=WUkong_x,Wukong_y=139,602   #7,602
 
+#run images
+Player_images = os.path.join(img_folder)
+Player_images = {
+    '0': {
+        'run':[
+            os.path.join(img_folder,"WuKong 1.png"),
+            os.path.join(img_folder,"WuKong 2.png"),
+            os.path.join(img_folder,"WuKong 3.png"),
+            os.path.join(img_folder,"WuKong 4.png")
+        ]
+    },
+
+}
+
+
+#jump images
+jump_images=[os.path.join(img_folder,"WuKong 6.png"),os.path.join(img_folder,"WuKong 5.png"),os.path.join(img_folder,"WuKong 6.png")]
+
 #initialize pygame and create window 创造窗口
 pygame.init()
 #screen=pygame.display.set_mode(size, pygame.RESIZABLE) #可移动的屏幕有机会再说
