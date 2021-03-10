@@ -41,6 +41,27 @@ pygame.init()
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("FM207") #give the game a name 给它个名字
 
+#setup player
+class Player(pygame.sprite.Sprite):
+   #sprite for the player
+
+   def __init__(self):
+       pygame.sprite.Sprite.__init__(self)
+       self.image=pygame.image.load(os.path.join(img_folder,"WoKong 11.png")).convert()
+       self.rect=self.image.get_rect()#each sprite is a rect
+       self.rect.center=(WIDTH-60,HEIGHT-60) #set starting location
+       self.y_speed=10
+
+   def update(self):
+       self.y_speed=0
+       #controls
+       keys=pygame.key.get_pressed()
+       if keys[pygame.K_UP]:
+           self.y_speed=-10
+       if keys[pygame.K_DOWN]:
+           self.y_speed = 10
+       self.rect.up +=self.y_speed
+
 #run game 开始冲冲冲
 while True:
     for event in pygame.event.get():
