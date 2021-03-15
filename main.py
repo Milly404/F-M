@@ -11,7 +11,7 @@ pygame.init()
 vInfo = pygame.display.Info()
 #size = WIDTH, HEIGHT = vInfo.current_w, vInfo.current_h #适合大小
 size = WIDTH, HEIGHT = 1200,900 #固定大小
-FPS=258
+FPS=16
 VEL=10
 BLACK = 0,0,0
 
@@ -23,15 +23,18 @@ img_folder=os.path.join(game_folder,"img")
 #background 背景照片导入
 background=pygame.image.load(os.path.join(img_folder,"background right.png"))
 background_rect=background.get_rect()
+y1=140
+y2=240
+y3=340
 
 #icon 图标导入
 icon = pygame.image.load(os.path.join(img_folder,"icon.png"))
 pygame.display.set_icon(icon)
 
 #player 人物照片导入
-WuKong1=pygame.image.load(os.path.join(img_folder,"WuKong 11.png"))
-WuKong1_rect=WuKong1.get_rect()
-Wukong=WUkong_x,Wukong_y=139,602   #7,602
+# WuKong1=pygame.image.load(os.path.join(img_folder,"WuKong 1.png"))
+# WuKong1_rect=WuKong1.get_rect()
+# Wukong=WUkong_x,Wukong_y=139,602   #7,602
 
 #run images
 player_run = [
@@ -49,6 +52,7 @@ player_jump = [
 ]
 
 
+
 #initialize pygame and create window 创造窗口
 pygame.init()
 #screen=pygame.display.set_mode(size, pygame.RESIZABLE) #可移动的屏幕有机会再说
@@ -63,20 +67,53 @@ class Player(pygame.sprite.Sprite):
 
    def __init__(self):
        pygame.sprite.Sprite.__init__(self)
-       self.image=pygame.image.load(os.path.join(img_folder,"WoKong 11.png")).convert()
-       self.rect=self.image.get_rect()#each sprite is a rect
-       self.rect.center=(WIDTH-60,HEIGHT-60) #set starting location
-       self.y_speed=10
+       self.image=pygame.image.load(os.path.join(img_folder,"WuKong 1.png"))
+       self.rect=self.image.get_rect()
+       self.rect.center=139,602
+       self.y_speed=1
+       self.rect.bottom=746
+       self.level=2
+       self.levelChange=10
+
+       # self.images=player_run
+       # self.image=self.images['run'][0]
+       #
+       # self.rect=self.image.get_rect()
+       # self.mask=pygame.mask.from_surface(self.image)
+       # self.rect.left, self.rect.top=position
+       # self.rect.top-=1
+       #
+       # self.state='run'
+       # self.is_up=False
+       # self.init.speed=10*FPS/1000
+       # self.base_height=BASE_HEIGHT
 
    def update(self):
        self.y_speed=0
-       #controls
        keys=pygame.key.get_pressed()
+       #global y3
        if keys[pygame.K_UP]:
-           self.y_speed=-10
+           self.rect.bottom += self.levelChange*-1
+           print(self.levelChange)
+
+           self.level+=1
+           '''if self.y==y3:
+               self.y=y2
+           if self.y==y1 or self.y==y2:
+               self.y=y1
+
        if keys[pygame.K_DOWN]:
-           self.y_speed = 10
-       self.rect.up +=self.y_speed
+           if self.y==y1:
+               self.y=y2
+           if self.y==y2 or self.y==y3:
+               self.y=y3
+        '''
+       #self.rect.top +=self.y_speed
+
+
+all_sprites=pygame.sprite.Group() #group all of them
+player=Player()
+all_sprites.add(player) #add player1
 
 #run game 开始冲冲冲
 while True:
@@ -109,10 +146,10 @@ while True:
     screen.blit(background,background_rect)
 
     #打印人物
-    screen.blit(WuKong1, Wukong)
+    all_sprites.update()
+    all_sprites.draw(screen)
 
     pygame.display.update()
-    pygame.display.flip()
 pygame.quit()
 
 
