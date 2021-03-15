@@ -34,19 +34,19 @@ WuKong1_rect=WuKong1.get_rect()
 Wukong=WUkong_x,Wukong_y=139,602   #7,602
 
 #run images
-player_run = (
+player_run = [
     os.path.join(img_folder, "WuKong 1.png"),
     os.path.join(img_folder, "WuKong 2.png"),
     os.path.join(img_folder, "WuKong 3.png"),
     os.path.join(img_folder, "WuKong 4.png"),
-)
+]
 
 #jump images
-player_jump = (
+player_jump = [
     os.path.join(img_folder,"WuKong 6.png"),
     os.path.join(img_folder,"WuKong 5.png"),
     os.path.join(img_folder,"WuKong 6.png"),
-)
+]
 
 
 #initialize pygame and create window 创造窗口
