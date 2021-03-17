@@ -23,13 +23,14 @@ img_folder=os.path.join(game_folder,"img")
 #background 背景照片导入
 background=pygame.image.load(os.path.join(img_folder,"background right.png"))
 background_rect=background.get_rect()
-y1=140
-y2=240
-y3=340
 
 #icon 图标导入
 icon = pygame.image.load(os.path.join(img_folder,"icon.png"))
 pygame.display.set_icon(icon)
+
+#obstacle 障碍导入
+stone=pygame.image.load(os.path.join(img_folder,"Stone.png"))
+stone_rect=stone.get_rect()
 
 #player 人物照片导入
 # WuKong1=pygame.image.load(os.path.join(img_folder,"WuKong 1.png"))
@@ -51,8 +52,6 @@ player_jump = [
     os.path.join(img_folder,"WuKong 6.png"),
 ]
 
-
-
 #initialize pygame and create window 创造窗口
 pygame.init()
 #screen=pygame.display.set_mode(size, pygame.RESIZABLE) #可移动的屏幕有机会再说
@@ -71,7 +70,7 @@ class Player(pygame.sprite.Sprite):
        self.rect=self.image.get_rect()
        self.rect.center=139,602
        self.y_speed=1
-       self.rect.bottom=746
+       self.rect.bottom=830
        self.level=2
        self.levelChange=10
 
@@ -91,24 +90,36 @@ class Player(pygame.sprite.Sprite):
    def update(self):
        self.y_speed=0
        keys=pygame.key.get_pressed()
+       y1 = 530
+       y2 = 675
+       y3 = 830
        #global y3
+       # if keys[pygame.K_DOWN]:
+       #     self.rect.bottom +=self.levelChange*+1
+       #     print(self.levelChange)
+       # if keys[pygame.K_UP]:
+       #     self.rect.bottom += self.levelChange*-1
+       #     print(self.levelChange)
+       #
+       #     self.level+=1
        if keys[pygame.K_UP]:
-           self.rect.bottom += self.levelChange*-1
-           print(self.levelChange)
-
-           self.level+=1
-           '''if self.y==y3:
-               self.y=y2
-           if self.y==y1 or self.y==y2:
-               self.y=y1
+           print("bottom",self.rect.bottom, " y", y3, y1, y2)
+           # if self.rect.bottom==y1:
+           #     self.rect.bottom=y1
+           if self.rect.bottom==y2:
+               self.rect.bottom=y2
+           elif self.rect.bottom == y3:
+               self.rect.bottom=y2
 
        if keys[pygame.K_DOWN]:
-           if self.y==y1:
-               self.y=y2
-           if self.y==y2 or self.y==y3:
-               self.y=y3
-        '''
-       #self.rect.top +=self.y_speed
+           if self.rect.bottom==y1:
+               self.rect.bottom=y2
+           elif self.rect.bottom==y2:
+               self.rect.bottom=y3
+           elif self.rect.bottom==y3:
+               self.rect.bottom=y3
+
+       #self.rect.top +=self.y_speedb
 
 
 all_sprites=pygame.sprite.Group() #group all of them
@@ -124,10 +135,6 @@ while True:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE: #close the window with Esc
                 sys.exit()
-            #if event.key == pygame.K_UP:
-
-            #elif event.key == pygame.K_DOWN:
-
 
         # 测试xy轴
         #elif event.type == pygame.MOUSEMOTION:#鼠标所在位置
@@ -151,5 +158,3 @@ while True:
 
     pygame.display.update()
 pygame.quit()
-
-
