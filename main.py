@@ -14,7 +14,7 @@ pygame.init()
 vInfo = pygame.display.Info()
 #size = WIDTH, HEIGHT = vInfo.current_w, vInfo.current_h #适合大小
 size = WIDTH, HEIGHT = 1200,900 #固定大小
-FPS=1
+FPS=30
 VEL=10
 BLACK = 0,0,0
 
@@ -45,6 +45,7 @@ player_run.append(pygame.image.load('img\WuKong 1.png'))
 player_run.append(pygame.image.load('img\WuKong 2.png'))
 player_run.append(pygame.image.load('img\WuKong 3.png'))
 player_run.append(pygame.image.load('img\WuKong 4.png'))
+player_run.reverse()
 
 #jump images
 player_jump = []
@@ -69,7 +70,10 @@ class Player(pygame.sprite.Sprite):
        pygame.sprite.Sprite.__init__(self)
 
        super().__init__()
-       self.run_animation = False
+       #self.run_animation = False
+       self.animation_speed = 8
+       self.animation_counter = 0
+       self.frame_ratio = int(FPS/self.animation_speed)
        self.sprites = player_run
        self.current_sprite = 0
        self.image = self.sprites[self.current_sprite]
@@ -82,14 +86,24 @@ class Player(pygame.sprite.Sprite):
        self.levelChange=10
        self.joystick_pressed = False
 
-   def run(self,speed):
-       self.current_sprite += speed
+   def run_animation(self,speed):
+
+       global FPS
+
+       self.animation_counter += 1
+
+       if self.animation_counter == self.frame_ratio:
+           self.animation_counter = 0
+           self.current_sprite += speed
+
        if int(self.current_sprite) >= len(self.sprites):
            self.current_sprite = 0
-           self.run_animation = False
        self.image = self.sprites[int(self.current_sprite)]
 
    def update(self):
+
+       self.run_animation(1)
+
        self.y_speed=0
        keys=pygame.key.get_pressed()
        y1 = 530
@@ -159,6 +173,8 @@ all_sprites.add(player) #add player1
 #run game 开始冲冲冲
 while True:
 
+    clock.tick(FPS)
+
     p1.update()
 
     for event in pygame.event.get():
@@ -187,7 +203,6 @@ while True:
 
     #打印人物
     all_sprites.update()
-    all_sprites.run()
     all_sprites.draw(screen)
 
     pygame.display.update()
