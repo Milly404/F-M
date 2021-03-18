@@ -2,7 +2,7 @@
 # FM207
 # Mar 4 2021
 
-import pygame
+import pygame,sys
 import random
 import os
 from random import random, randint, seed
@@ -54,6 +54,7 @@ player_jump.append(pygame.image.load('img\WuKong 6.png'))
 
 #initialize pygame and create window 创造窗口
 pygame.init()
+clock = pygame.time.Clock()
 #screen=pygame.display.set_mode(size, pygame.RESIZABLE) #可移动的屏幕有机会再说
 #screen=pygame.display.set_mode(size, pygame.NOFRAME)#无边框
 #screen=pygame.display.set_mode(size, pygame.FULLSCREEN) #诶嘿搞个全屏就快乐了
@@ -66,8 +67,14 @@ class Player(pygame.sprite.Sprite):
 
    def __init__(self):
        pygame.sprite.Sprite.__init__(self)
-       self.image=pygame.image.load(os.path.join(img_folder,"WuKong 1.png"))
-       self.rect=self.image.get_rect()
+
+       super().__init__()
+       self.run_animation = False
+       self.sprites = player_run
+       self.current_sprite = 0
+       self.image = self.sprites[self.current_sprite]
+       self.rect = self.image.get_rect()
+
        self.rect.center=139,602
        self.y_speed=1
        self.rect.bottom=830
@@ -75,6 +82,12 @@ class Player(pygame.sprite.Sprite):
        self.levelChange=10
        self.joystick_pressed = False
 
+   def run(self,speed):
+       self.current_sprite += speed
+       if int(self.current_sprite) >= len(self.sprites):
+           self.current_sprite = 0
+           self.run_animation = False
+       self.image = self.sprites[int(self.current_sprite)]
 
    def update(self):
        self.y_speed=0
@@ -174,6 +187,7 @@ while True:
 
     #打印人物
     all_sprites.update()
+    all_sprites.run()
     all_sprites.draw(screen)
 
     pygame.display.update()
