@@ -6,12 +6,15 @@ import pygame
 import random
 import os
 from random import random, randint, seed
+import controller
+
+p1 = controller.Controller(0)
 
 pygame.init()
 vInfo = pygame.display.Info()
 #size = WIDTH, HEIGHT = vInfo.current_w, vInfo.current_h #适合大小
 size = WIDTH, HEIGHT = 1200,900 #固定大小
-FPS=16
+FPS=1
 VEL=10
 BLACK = 0,0,0
 
@@ -73,6 +76,7 @@ class Player(pygame.sprite.Sprite):
        self.rect.bottom=830
        self.level=2
        self.levelChange=10
+       self.joystick_pressed = False
 
        # self.images=player_run
        # self.image=self.images['run'][0]
@@ -93,33 +97,61 @@ class Player(pygame.sprite.Sprite):
        y1 = 530
        y2 = 675
        y3 = 830
-       #global y3
-       # if keys[pygame.K_DOWN]:
-       #     self.rect.bottom +=self.levelChange*+1
-       #     print(self.levelChange)
-       # if keys[pygame.K_UP]:
-       #     self.rect.bottom += self.levelChange*-1
-       #     print(self.levelChange)
-       #
-       #     self.level+=1
-       if keys[pygame.K_UP]:
-           print("bottom",self.rect.bottom, " y", y3, y1, y2)
-           # if self.rect.bottom==y1:
-           #     self.rect.bottom=y1
-           if self.rect.bottom==y2:
-               self.rect.bottom=y2
-           elif self.rect.bottom == y3:
-               self.rect.bottom=y2
 
-       if keys[pygame.K_DOWN]:
-           if self.rect.bottom==y1:
-               self.rect.bottom=y2
-           elif self.rect.bottom==y2:
-               self.rect.bottom=y3
-           elif self.rect.bottom==y3:
-               self.rect.bottom=y3
+       if self.joystick_pressed == False:
+           self.level += p1.get_y_axis()
 
-       #self.rect.top +=self.y_speedb
+       if p1.get_y_axis() != 0:
+           self.joystick_pressed = True
+       else:
+           self.joystick_pressed = False
+
+       if p1.is_button_just_pressed("a"):
+           self.level += 1
+       elif p1.is_button_just_pressed("b"):
+           self.level -= 1
+
+       if self.level > 3:
+           self.level = 3
+       elif self.level < 1:
+           self.level = 1
+
+       if self.level == 1:
+           self.rect.bottom = y1
+       elif self.level == 2:
+           self.rect.bottom = y2
+       else:
+           self.rect.bottom = y3
+
+
+       # if event.type==pygame.KEYDOWN:
+       #     if event.key==pygame.K_UP:
+       #         if self.rect.bottom==y2 or y1:
+       #             self.rect.bottom=y1
+       #         if self.rect.bottom==y3:
+       #             self.rect.bottom=y2
+       #     elif event.key==pygame.K_DOWN:
+       #         if self.rect.bottom==y2 or y3:
+       #             self.rect.bottom=y3
+       #         if self.rect.bottom==y1:
+       #             self.rect.bottom=y2
+       #     elif event.type==pygame.KEYUP:
+       #         player_movey=1
+       # elif event.type==pygame.KEYUP:
+       #     if event.key==pygame.K_UP:
+       #          if self.rect.bottom == y2:
+       #              self.rect.bottom = y2
+       #          if self.rect.bottom == y3:
+       #              self.rect.bottom = y3
+       #          if self.rect.bottom==y1:
+       #              self.rect.bottom=y1
+       #     elif event.key==pygame.K_DOWN:
+       #         if self.rect.bottom == y2:
+       #             self.rect.bottom = y2
+       #         if self.rect.bottom == y3:
+       #             self.rect.bottom = y3
+       #         if self.rect.bottom == y1:
+       #             self.rect.bottom = y1
 
 
 all_sprites=pygame.sprite.Group() #group all of them
@@ -128,11 +160,14 @@ all_sprites.add(player) #add player1
 
 #run game 开始冲冲冲
 while True:
+
+    p1.update()
+
     for event in pygame.event.get():
         #close the window
         if event.type == pygame.QUIT:
             sys.exit()
-        elif event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE: #close the window with Esc
                 sys.exit()
 
