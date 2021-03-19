@@ -16,6 +16,9 @@ vInfo = pygame.display.Info()
 size = WIDTH, HEIGHT = 1200,900 #固定大小
 FPS=30
 VEL=10
+y1 = 530
+y2 = 675
+y3 = 830
 BLACK = 0,0,0
 
 #images 照片
@@ -106,9 +109,6 @@ class Player(pygame.sprite.Sprite):
 
        self.y_speed=0
        keys=pygame.key.get_pressed()
-       y1 = 530
-       y2 = 675
-       y3 = 830
 
        if self.joystick_pressed == False:
            self.level += p1.get_y_axis()
@@ -165,6 +165,18 @@ class Player(pygame.sprite.Sprite):
        #         if self.rect.bottom == y1:
        #             self.rect.bottom = y1
 
+
+class obstacle(pygame.sprite.Sprite):
+
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image=pygame.image.load(os.path.join(img_folder,"Stone.png"))
+        self.rect=self.image.get_rect()
+        self.rect.center = 139, 602
+
+    def update(self):
+        self.rect.x+=5
+        self.rect.y=y1
 
 all_sprites=pygame.sprite.Group() #group all of them
 player=Player()
