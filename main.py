@@ -56,6 +56,13 @@ player_jump.append(pygame.image.load('img\WuKong 6.png'))
 player_jump.append(pygame.image.load('img\WuKong 5.png'))
 player_jump.append(pygame.image.load('img\WuKong 6.png'))
 
+#obstacle images
+obstacle_img = []
+obstacle_img.append(pygame.image.load('img\Stone.PNG'))
+obstacle_img.append(pygame.image.load('img\HuLu.PNG'))
+obstacle_img.append(pygame.image.load('img\JingJiaoDaWang.PNG'))
+obstacle_img.append(pygame.image.load('img\PanTao.PNG'))
+
 #initialize pygame and create window 创造窗口
 pygame.init()
 clock = pygame.time.Clock()
@@ -102,6 +109,10 @@ class Player(pygame.sprite.Sprite):
        if int(self.current_sprite) >= len(self.sprites):
            self.current_sprite = 0
        self.image = self.sprites[int(self.current_sprite)]
+
+   #def jump(self):
+
+
 
    def update(self):
 
@@ -170,17 +181,26 @@ class obstacle(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.image.load(os.path.join(img_folder,"Stone.png"))
-        self.rect=self.image.get_rect()
-        self.rect.center = 139, 602
+        self.sprites = obstacle_img
+        self.current_sprite = randint(0,3)
+        self.image = self.sprites[self.current_sprite]
+        self.rect = self.image.get_rect()
+        y1=randint(0,2)*150+600
+        self.rect.bottomleft = (randint(970,3000),y1)
+        self.start_time=pygame.time.get_ticks()
 
     def update(self):
-        self.rect.x+=5
-        self.rect.y=y1
+        if self.start_time and pygame.time.get_ticks()-self.start_time>2000:
+            self.start_time=False
+        self.rect.x-=5
 
 all_sprites=pygame.sprite.Group() #group all of them
 player=Player()
 all_sprites.add(player) #add player1
+
+for Obstacle in range(1,10):
+    Obstacle=obstacle()
+    all_sprites.add(Obstacle) #add obstacle
 
 #run game 开始冲冲冲
 while True:
