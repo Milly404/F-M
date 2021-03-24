@@ -14,7 +14,7 @@ pygame.init()
 pygame.display.set_caption('game base')
 screen = pygame.display.set_mode((1200, 900), 0, 32)
 
-font = pygame.font.SysFont('Time New Roman', 45)
+font = pygame.font.SysFont('Arial', 45)
 
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
@@ -26,20 +26,18 @@ click = False
 
 def main_menu():
     while True:
-
         screen.blit(menu,menu_rect)
-
 
         mx, my = pygame.mouse.get_pos()
 
-        button_1 = pygame.Rect(500, 650, 100, 45)
+        button_1 = pygame.Rect(503, 653, 140, 65)
 
         if button_1.collidepoint((mx, my)):
             if click:
                 game()
 
         pygame.draw.rect(screen, (194, 221, 239), button_1)
-        draw_text('Start', font, (0, 0, 0), screen, 514, 658)
+        draw_text('START', font, (45, 95, 204), screen, 514, 658)
 
         click = False
         for event in pygame.event.get():
