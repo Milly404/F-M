@@ -22,9 +22,15 @@ VEL = 10
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
 
+#menu images
+menu = pygame.image.load(os.path.join(img_folder,"menu.png"))
+menu_rect = menu.get_rect()
+
 # background
-background = pygame.image.load(os.path.join(img_folder, "background right.png"))
-background_rect = background.get_rect()
+bg1 = pygame.image.load(os.path.join(img_folder,"background left.png"))
+bg2 = pygame.image.load(os.path.join(img_folder,"background left.png"))
+x1 = 0
+x2 = -1200
 
 # icon
 icon = pygame.image.load(os.path.join(img_folder, "icon.png"))
@@ -44,6 +50,23 @@ player_jump = []
 player_jump.append(pygame.image.load('img\WuKong 6.png'))
 player_jump.append(pygame.image.load('img\WuKong 5.png'))
 player_jump.append(pygame.image.load('img\WuKong 6.png'))
+
+def bg_move():
+
+    global x1,x2
+
+    x1 -= 3
+    x2 -= 3
+
+    screen.blit(bg1, (x1, 0))
+    screen.blit(bg2, (x2, 0))
+
+    if x1 < -1200:
+        x1 = 1200
+    if x2 < -1200:
+        x2 = 1200
+
+    return x1, x2
 
 #setup player
 class Player(pygame.sprite.Sprite):
@@ -133,7 +156,7 @@ while True:
                 sys.exit()
 
     # draw background
-    screen.blit(background, background_rect)
+    x1, x2 = bg_move()
 
     # draw payer
     all_sprites.update()
