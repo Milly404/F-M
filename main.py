@@ -28,8 +28,8 @@ game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder,"img")
 
 #background 背景照片导入
-bg1 = pygame.image.load(os.path.join(img_folder,"background right.png"))
-bg2 = pygame.image.load(os.path.join(img_folder,"background right.png"))
+bg1 = pygame.image.load(os.path.join(img_folder,"background left.png"))
+bg2 = pygame.image.load(os.path.join(img_folder,"background left.png"))
 
 x1 = 0
 x2 = -1200
@@ -86,10 +86,10 @@ def bg_move():
     screen.blit(bg1, (x1,0))
     screen.blit(bg2, (x2, 0))
 
-    if x1 > 1200:
-        x1 = -1200
-    if x2 > 1200:
-        x2 = -1200
+    if x1 < -1200:
+        x1 = 1200
+    if x2 < -1200:
+        x2 = 1200
 
     return x1, x2
 
