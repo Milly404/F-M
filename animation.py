@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame,sys
 
 player_run = []
 player_run.append(pygame.image.load('img\WuKong 1.png'))
@@ -6,24 +6,68 @@ player_run.append(pygame.image.load('img\WuKong 2.png'))
 player_run.append(pygame.image.load('img\WuKong 3.png'))
 player_run.append(pygame.image.load('img\WuKong 4.png'))
 
+#jump images
+player_jump = []
+player_jump.append(pygame.image.load('img\WuKong 6.png'))
+player_jump.append(pygame.image.load('img\WuKong 5.png'))
+player_jump.append(pygame.image.load('img\WuKong 6.png'))
+
+
+
+
+#setup player
 class Player(pygame.sprite.Sprite):
-  def __init__(self, pos_x, pos_y):
-     super().__init__()
-     self.run_animation = False
-     self.sprites = player_run
+   #sprite for the player
 
-     self.current_sprite = 0
-     self.image = self.sprites[self.current_sprite]
-     self.rect = self.image.get_rect()
-     self.rect.topleft = [pos_x,pos_y]
+   def __init__(self):
+       pygame.sprite.Sprite.__init__(self)
+
+       super().__init__()
+       #self.run_animation = False
+       self.animation_speed = 8
+       self.animation_counter = 0
+       self.frame_ratio = int(FPS/self.animation_speed)
+       self.sprites = player_run
+       self.current_sprite = 0
+       self.image = self.sprites[self.current_sprite]
+       self.rect = self.image.get_rect()
+
+       self.rect.center=139,602
+       self.y_speed=1
+       self.rect.bottom=830
+       self.level=2
+       self.levelChange=10
+       self.joystick_pressed = False
+
+   def run_animation(self,speed):
+
+       global FPS
+
+       self.animation_counter += 1
+
+       if self.animation_counter == self.frame_ratio:
+           self.animation_counter = 0
+           self.current_sprite += speed
+
+       if int(self.current_sprite) >= len(self.sprites):
+           self.current_sprite = 0
+       self.image = self.sprites[int(self.current_sprite)]
+
+   def jump(self):
+
+       global FPS
 
 
-  def update(self,speed):
-     self.current_sprite += speed
-     if int(self.current_sprite) >= len(self.sprites):
-        self.current_sprite = 0
-        self.run_animation = False
-     self.image = self.sprites[int(self.current_sprite)]
+
+
+   def update(self):
+
+       self.run_animation(1)
+
+       self.y_speed=0
+       keys=pygame.key.get_pressed()
+
+
 
 # General setup
 pygame.init()

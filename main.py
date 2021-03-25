@@ -24,12 +24,15 @@ BLACK = 0,0,0
 
 #images 照片
 #find the folder of images 找到我们可爱的照片文件夹
-game_folder=os.path.dirname(__file__)
-img_folder=os.path.join(game_folder,"img")
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder,"img")
 
 #background 背景照片导入
-background=pygame.image.load(os.path.join(img_folder,"background right.png"))
-background_rect=background.get_rect()
+bg1 = pygame.image.load(os.path.join(img_folder,"background right.png"))
+bg2 = pygame.image.load(os.path.join(img_folder,"background right.png"))
+
+x1 = 0
+x2 = -1200
 
 #icon 图标导入
 icon = pygame.image.load(os.path.join(img_folder,"icon.png"))
@@ -72,6 +75,23 @@ clock = pygame.time.Clock()
 #screen=pygame.display.set_mode(size, pygame.FULLSCREEN) #诶嘿搞个全屏就快乐了
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("FM207") #give the game a name 给它个名字
+
+def bg_move():
+
+    global x1,x2
+
+    x1 -= 1
+    x2 -= 1
+
+    screen.blit(bg1, (x1,0))
+    screen.blit(bg2, (x2, 0))
+
+    if x1 > 1200:
+        x1 = -1200
+    if x2 > 1200:
+        x2 = -1200
+
+    return x1, x2
 
 #setup player
 class Player(pygame.sprite.Sprite):
@@ -254,7 +274,7 @@ while True:
             #screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
     #draw /render打印背景
-    screen.blit(background,background_rect)
+    x1, x2 = bg_move()
 
     #打印人物
     all_sprites.update()
