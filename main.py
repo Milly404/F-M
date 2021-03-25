@@ -80,8 +80,8 @@ def bg_move():
 
     global x1,x2
 
-    x1 -= 1
-    x2 -= 1
+    x1 -= 3
+    x2 -= 3
 
     screen.blit(bg1, (x1,0))
     screen.blit(bg2, (x2, 0))
@@ -228,7 +228,7 @@ class obstacle(pygame.sprite.Sprite):
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
         y1=randint(0,2)*150+600
-        self.rect.bottomleft = (randint(970,10000),y1)
+        self.rect.bottomleft = (randint(970,1000000),y1)
         self.start_time=pygame.time.get_ticks()
 
     def update(self):
@@ -238,12 +238,15 @@ class obstacle(pygame.sprite.Sprite):
 
 
 all_sprites=pygame.sprite.Group() #group all of them
+
+for Obstacle in range(1,10000):
+    Obstacle=obstacle()
+    all_sprites.add(Obstacle) #add obstacle
+
 player=Player()
 all_sprites.add(player) #add player1
 
-for Obstacle in range(1,50):
-    Obstacle=obstacle()
-    all_sprites.add(Obstacle) #add obstacle
+
 
 #run game 开始冲冲冲
 while True:
