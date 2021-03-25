@@ -1,17 +1,20 @@
-#!/usr/bin/python3.4
-# Setup Python ----------------------------------------------- #
 import pygame, sys
+import os
 
-# Setup pygame/window ---------------------------------------- #
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder,"img")
+
+menu = pygame.image.load(os.path.join(img_folder,"menu.png"))
+menu_rect = menu.get_rect()
+
 mainClock = pygame.time.Clock()
 from pygame.locals import *
 
 pygame.init()
 pygame.display.set_caption('game base')
-screen = pygame.display.set_mode((500, 500), 0, 32)
+screen = pygame.display.set_mode((1200, 900), 0, 32)
 
-font = pygame.font.SysFont(None, 20)
-
+font = pygame.font.SysFont('Arial', 45)
 
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
@@ -19,28 +22,22 @@ def draw_text(text, font, color, surface, x, y):
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
 
-
 click = False
-
 
 def main_menu():
     while True:
-
-        screen.fill((0, 0, 0))
-        draw_text('main menu', font, (255, 255, 255), screen, 20, 20)
+        screen.blit(menu,menu_rect)
 
         mx, my = pygame.mouse.get_pos()
 
-        button_1 = pygame.Rect(50, 100, 200, 50)
-        button_2 = pygame.Rect(50, 200, 200, 50)
+        button_1 = pygame.Rect(503, 653, 140, 65)
+
         if button_1.collidepoint((mx, my)):
             if click:
                 game()
-        if button_2.collidepoint((mx, my)):
-            if click:
-                options()
-        pygame.draw.rect(screen, (255, 0, 0), button_1)
-        pygame.draw.rect(screen, (255, 0, 0), button_2)
+
+        pygame.draw.rect(screen, (194, 221, 239), button_1)
+        draw_text('START', font, (45, 95, 204), screen, 514, 658)
 
         click = False
         for event in pygame.event.get():
@@ -65,24 +62,6 @@ def game():
         screen.fill((0, 0, 0))
 
         draw_text('game', font, (255, 255, 255), screen, 20, 20)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    running = False
-
-        pygame.display.update()
-        mainClock.tick(60)
-
-
-def options():
-    running = True
-    while running:
-        screen.fill((0, 0, 0))
-
-        draw_text('options', font, (255, 255, 255), screen, 20, 20)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()

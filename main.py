@@ -7,6 +7,7 @@ import random
 import os
 from random import random, randint, seed
 import controller
+from time import sleep
 
 p1 = controller.Controller(0)
 
@@ -23,12 +24,15 @@ BLACK = 0,0,0
 
 #images 照片
 #find the folder of images 找到我们可爱的照片文件夹
-game_folder=os.path.dirname(__file__)
-img_folder=os.path.join(game_folder,"img")
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder,"img")
 
 #background 背景照片导入
-background=pygame.image.load(os.path.join(img_folder,"background right.png"))
-background_rect=background.get_rect()
+bg1 = pygame.image.load(os.path.join(img_folder,"background right.png"))
+bg2 = pygame.image.load(os.path.join(img_folder,"background right.png"))
+
+x1 = 0
+x2 = -1200
 
 #icon 图标导入
 icon = pygame.image.load(os.path.join(img_folder,"icon.png"))
@@ -72,6 +76,23 @@ clock = pygame.time.Clock()
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("FM207") #give the game a name 给它个名字
 
+def bg_move():
+
+    global x1,x2
+
+    x1 -= 1
+    x2 -= 1
+
+    screen.blit(bg1, (x1,0))
+    screen.blit(bg2, (x2, 0))
+
+    if x1 > 1200:
+        x1 = -1200
+    if x2 > 1200:
+        x2 = -1200
+
+    return x1, x2
+
 #setup player
 class Player(pygame.sprite.Sprite):
    #sprite for the player
@@ -87,6 +108,11 @@ class Player(pygame.sprite.Sprite):
        self.sprites = player_run
        self.current_sprite = 0
        self.image = self.sprites[self.current_sprite]
+       self.rect = self.image.get_rect()
+
+       self.sprites_jump=player_jump
+       self.current_sprite_jump = 1
+       self.image = self.sprites_jump[self.current_sprite_jump]
        self.rect = self.image.get_rect()
 
        self.rect.center=139,602
@@ -110,7 +136,20 @@ class Player(pygame.sprite.Sprite):
            self.current_sprite = 0
        self.image = self.sprites[int(self.current_sprite)]
 
-   #def jump(self):
+   def jump(self,speed):
+       self.allow_jump=False
+
+       global FPS
+
+       self.animation_counter += 1
+
+       if self.animation_counter == self.frame_ratio:
+           self.animation_counter = 0
+           self.current_sprite_jump += speed
+
+       if int(self.current_sprite_jump) >= len(self.sprites_jump):
+           self.current_sprite_jump = 0
+       self.image = self.sprites_jump[int(self.current_sprite_jump)]
 
 
 
@@ -129,10 +168,10 @@ class Player(pygame.sprite.Sprite):
        else:
            self.joystick_pressed = False
 
-       if p1.is_button_just_pressed("a"):
-           self.level += 1
-       elif p1.is_button_just_pressed("b"):
-           self.level -= 1
+       # if p1.is_button_just_pressed("a"):
+       #     self.level += 1
+       # elif p1.is_button_just_pressed("b"):
+       #     self.level -= 1
 
        if self.level > 3:
            self.level = 3
@@ -146,6 +185,9 @@ class Player(pygame.sprite.Sprite):
        else:
            self.rect.bottom = y3
 
+       if p1.is_button_just_pressed("a"):
+           self.jump(1)
+           self.rect.bottom-=30
 
        # if event.type==pygame.KEYDOWN:
        #     if event.key==pygame.K_UP:
@@ -186,7 +228,7 @@ class obstacle(pygame.sprite.Sprite):
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
         y1=randint(0,2)*150+600
-        self.rect.bottomleft = (randint(970,3000),y1)
+        self.rect.bottomleft = (randint(970,10000),y1)
         self.start_time=pygame.time.get_ticks()
 
     def update(self):
@@ -194,11 +236,12 @@ class obstacle(pygame.sprite.Sprite):
             self.start_time=False
         self.rect.x-=5
 
+
 all_sprites=pygame.sprite.Group() #group all of them
 player=Player()
 all_sprites.add(player) #add player1
 
-for Obstacle in range(1,10):
+for Obstacle in range(1,50):
     Obstacle=obstacle()
     all_sprites.add(Obstacle) #add obstacle
 
@@ -231,7 +274,7 @@ while True:
             #screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
     #draw /render打印背景
-    screen.blit(background,background_rect)
+    x1, x2 = bg_move()
 
     #打印人物
     all_sprites.update()
