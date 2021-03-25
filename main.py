@@ -7,6 +7,7 @@ import random
 import os
 from random import random, randint, seed
 import controller
+from time import sleep
 
 p1 = controller.Controller(0)
 
@@ -89,6 +90,11 @@ class Player(pygame.sprite.Sprite):
        self.image = self.sprites[self.current_sprite]
        self.rect = self.image.get_rect()
 
+       self.sprites_jump=player_jump
+       self.current_sprite_jump = 1
+       self.image = self.sprites_jump[self.current_sprite_jump]
+       self.rect = self.image.get_rect()
+
        self.rect.center=139,602
        self.y_speed=1
        self.rect.bottom=830
@@ -110,7 +116,20 @@ class Player(pygame.sprite.Sprite):
            self.current_sprite = 0
        self.image = self.sprites[int(self.current_sprite)]
 
-   #def jump(self):
+   def jump(self,speed):
+       self.allow_jump=False
+
+       global FPS
+
+       self.animation_counter += 1
+
+       if self.animation_counter == self.frame_ratio:
+           self.animation_counter = 0
+           self.current_sprite_jump += speed
+
+       if int(self.current_sprite_jump) >= len(self.sprites_jump):
+           self.current_sprite_jump = 0
+       self.image = self.sprites_jump[int(self.current_sprite_jump)]
 
 
 
@@ -129,10 +148,10 @@ class Player(pygame.sprite.Sprite):
        else:
            self.joystick_pressed = False
 
-       if p1.is_button_just_pressed("a"):
-           self.level += 1
-       elif p1.is_button_just_pressed("b"):
-           self.level -= 1
+       # if p1.is_button_just_pressed("a"):
+       #     self.level += 1
+       # elif p1.is_button_just_pressed("b"):
+       #     self.level -= 1
 
        if self.level > 3:
            self.level = 3
@@ -146,6 +165,9 @@ class Player(pygame.sprite.Sprite):
        else:
            self.rect.bottom = y3
 
+       if p1.is_button_just_pressed("a"):
+           self.jump(1)
+           self.rect.bottom-=30
 
        # if event.type==pygame.KEYDOWN:
        #     if event.key==pygame.K_UP:
@@ -186,7 +208,7 @@ class obstacle(pygame.sprite.Sprite):
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
         y1=randint(0,2)*150+600
-        self.rect.bottomleft = (randint(970,3000),y1)
+        self.rect.bottomleft = (randint(970,10000),y1)
         self.start_time=pygame.time.get_ticks()
 
     def update(self):
@@ -194,11 +216,12 @@ class obstacle(pygame.sprite.Sprite):
             self.start_time=False
         self.rect.x-=5
 
+
 all_sprites=pygame.sprite.Group() #group all of them
 player=Player()
 all_sprites.add(player) #add player1
 
-for Obstacle in range(1,10):
+for Obstacle in range(1,50):
     Obstacle=obstacle()
     all_sprites.add(Obstacle) #add obstacle
 
