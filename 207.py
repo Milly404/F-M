@@ -2,7 +2,7 @@
 # FM207
 # Mar 4 2021
 
-import pygame
+import pygame,sys
 import random
 import os
 from pygame.locals import *
