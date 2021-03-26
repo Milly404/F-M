@@ -27,6 +27,9 @@ BLACK = 0,0,0
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder,"img")
 
+menu = pygame.image.load(os.path.join(img_folder,"menu.png"))
+menu_rect = menu.get_rect()
+
 #background 背景照片导入
 bg1 = pygame.image.load(os.path.join(img_folder,"background left.png"))
 bg2 = pygame.image.load(os.path.join(img_folder,"background left.png"))
