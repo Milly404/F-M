@@ -21,6 +21,7 @@ y1 = 530
 y2 = 675
 y3 = 830
 BLACK = 0,0,0
+RED = 225,0,0
 
 #images 照片
 #find the folder of images 找到我们可爱的照片文件夹
@@ -109,6 +110,8 @@ class Player(pygame.sprite.Sprite):
        self.current_sprite = 0
        self.image = self.sprites[self.current_sprite]
        self.rect = self.image.get_rect()
+       self.radius = int(self.rect.width / 3)
+       pygame.draw.circle(self.image, RED, self.rect.center, self.radius)
 
        self.sprites_jump=player_jump
        self.current_sprite_jump = 1
@@ -227,6 +230,8 @@ class obstacle(pygame.sprite.Sprite):
         self.current_sprite = randint(0,3)
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
+        self.radius = int(self.rect.width / 3)
+        pygame.draw.circle(self.image,RED,self.rect.center, self.radius)
         y1=randint(0,2)*150+600
         self.rect.bottomleft = (randint(970,1000000),y1)
         self.start_time=pygame.time.get_ticks()
