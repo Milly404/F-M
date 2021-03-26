@@ -240,8 +240,8 @@ class obstacle(pygame.sprite.Sprite):
         self.current_sprite = randint(0,3)
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
-        self.radius = int(self.rect.width / 2.4)
-        y1=randint(0,2)*150+600
+        self.radius = int(self.rect.width / 2.5)
+        y1=randint(0,2)*150+560
         self.rect.bottomleft = (randint(970,1000000),y1)
         self.start_time=pygame.time.get_ticks()
 
