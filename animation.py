@@ -28,8 +28,8 @@ game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder,"img")
 
 #background 背景照片导入
-bg1 = pygame.image.load(os.path.join(img_folder,"background right.png"))
-bg2 = pygame.image.load(os.path.join(img_folder,"background right.png"))
+bg1 = pygame.image.load(os.path.join(img_folder,"background left.png"))
+bg2 = pygame.image.load(os.path.join(img_folder,"background left.png"))
 
 x1 = 0
 x2 = -1200
@@ -80,8 +80,8 @@ def bg_move():
 
     global x1,x2
 
-    x1 -= 1
-    x2 -= 1
+    x1 -= 3
+    x2 -= 3
 
     screen.blit(bg1, (x1,0))
     screen.blit(bg2, (x2, 0))
@@ -93,8 +93,163 @@ def bg_move():
 
     return x1, x2
 
+#setup player
+class Player(pygame.sprite.Sprite):
+   #sprite for the player
+
+   def __init__(self):
+       pygame.sprite.Sprite.__init__(self)
+
+       super().__init__()
+       #self.run_animation = False
+       self.animation_speed = 8
+       self.animation_counter = 0
+       self.frame_ratio = int(FPS/self.animation_speed)
+       self.sprites = player_run
+       self.current_sprite = 0
+       self.image = self.sprites[self.current_sprite]
+       self.rect = self.image.get_rect()
+
+       self.sprites_jump=player_jump
+       self.current_sprite_jump = 1
+       self.image = self.sprites_jump[self.current_sprite_jump]
+       self.rect = self.image.get_rect()
+
+       self.rect.center=139,602
+       self.y_speed=1
+       self.rect.bottom=830
+       self.level=2
+       self.levelChange=10
+       self.joystick_pressed = False
+
+   def run_animation(self,speed):
+
+       global FPS
+
+       self.animation_counter += 1
+
+       if self.animation_counter == self.frame_ratio:
+           self.animation_counter = 0
+           self.current_sprite += speed
+
+       if int(self.current_sprite) >= len(self.sprites):
+           self.current_sprite = 0
+       self.image = self.sprites[int(self.current_sprite)]
+
+   def jump(self,speed):
+       self.allow_jump=False
+
+       global FPS
+
+       self.animation_counter += 1
+
+       if self.animation_counter == self.frame_ratio:
+           self.animation_counter = 0
+           self.current_sprite_jump += speed
+
+       if int(self.current_sprite_jump) >= len(self.sprites_jump):
+           self.current_sprite_jump = 0
+       self.image = self.sprites_jump[int(self.current_sprite_jump)]
+
+
+
+   def update(self):
+
+       self.run_animation(1)
+
+       self.y_speed=0
+       keys=pygame.key.get_pressed()
+
+       if self.joystick_pressed == False:
+           self.level += p1.get_y_axis()
+
+       if p1.get_y_axis() != 0:
+           self.joystick_pressed = True
+       else:
+           self.joystick_pressed = False
+
+       # if p1.is_button_just_pressed("a"):
+       #     self.level += 1
+       # elif p1.is_button_just_pressed("b"):
+       #     self.level -= 1
+
+       if self.level > 3:
+           self.level = 3
+       elif self.level < 1:
+           self.level = 1
+
+       if self.level == 1:
+           self.rect.bottom = y1
+       elif self.level == 2:
+           self.rect.bottom = y2
+       else:
+           self.rect.bottom = y3
+
+       if p1.is_button_just_pressed("a"):
+           self.jump(1)
+           self.rect.bottom-=30
+
+       # if event.type==pygame.KEYDOWN:
+       #     if event.key==pygame.K_UP:
+       #         if self.rect.bottom==y2 or y1:
+       #             self.rect.bottom=y1
+       #         if self.rect.bottom==y3:
+       #             self.rect.bottom=y2
+       #     elif event.key==pygame.K_DOWN:
+       #         if self.rect.bottom==y2 or y3:
+       #             self.rect.bottom=y3
+       #         if self.rect.bottom==y1:
+       #             self.rect.bottom=y2
+       #     elif event.type==pygame.KEYUP:
+       #         player_movey=1
+       # elif event.type==pygame.KEYUP:
+       #     if event.key==pygame.K_UP:
+       #          if self.rect.bottom == y2:
+       #              self.rect.bottom = y2
+       #          if self.rect.bottom == y3:
+       #              self.rect.bottom = y3
+       #          if self.rect.bottom==y1:
+       #              self.rect.bottom=y1
+       #     elif event.key==pygame.K_DOWN:
+       #         if self.rect.bottom == y2:
+       #             self.rect.bottom = y2
+       #         if self.rect.bottom == y3:
+       #             self.rect.bottom = y3
+       #         if self.rect.bottom == y1:
+       #             self.rect.bottom = y1
+
+
+class obstacle(pygame.sprite.Sprite):
+
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.sprites = obstacle_img
+        self.current_sprite = randint(0,3)
+        self.image = self.sprites[self.current_sprite]
+        self.rect = self.image.get_rect()
+        y1=randint(0,2)*150+600
+        self.rect.bottomleft = (randint(970,1000000),y1)
+        self.start_time=pygame.time.get_ticks()
+
+    def update(self):
+        if self.start_time and pygame.time.get_ticks()-self.start_time>2000:
+            self.start_time=False
+        self.rect.x-=5
+
+all_sprites=pygame.sprite.Group() #group all of them
+obstacles = pygame.sprite.Group()
+
+for Obstacle in range(1,10000):
+    Obstacle=obstacle()
+    all_sprites.add(Obstacle) #add obstacle
+    obstacles.add(Obstacle)
+
+player=Player()
+all_sprites.add(player) #add player1
+
+running = True
 #run game 开始冲冲冲
-while True:
+while running:
 
     clock.tick(FPS)
 
@@ -108,12 +263,31 @@ while True:
             if event.key == pygame.K_ESCAPE: #close the window with Esc
                 sys.exit()
 
+        # 测试xy轴
+        #elif event.type == pygame.MOUSEMOTION:#鼠标所在位置
+            #print("[MOUSEMOTION]:", event.pos,event.rel, event.buttons)
+        #elif event.type == pygame.MOUSEBUTTONUP:#鼠标释放
+            #print("[MOUSEBUTTONUP]:", event.pos, event.button)
+        elif event.type == pygame.MOUSEBUTTONDOWN:#鼠标点击
+            print("[MOUSEBUTTONDOWN]:", event.pos, event.button)
+
+        # 可移动并保持移动的窗口
+        #elif event.type == pygame.VIDEORESIZE:
+            #size = WIDTH,HEIGHT = event.size[0],event.size[1]
+            #screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
     #draw /render打印背景
     x1, x2 = bg_move()
 
+    #打印人物
+    all_sprites.update()
 
+    #check to see if hit
+    hits = pygame.sprite.spritecollide(player, obstacles, False)
+    if hits:
+        running = False
+
+    all_sprites.draw(screen)
 
     pygame.display.update()
 pygame.quit()
-
