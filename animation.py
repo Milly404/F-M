@@ -110,8 +110,9 @@ class Player(pygame.sprite.Sprite):
        self.current_sprite = 0
        self.image = self.sprites[self.current_sprite]
        self.rect = self.image.get_rect()
-       self.radius = int(self.rect.width / 3)
+       self.radius = int(self.rect.width / 2.2)
        pygame.draw.circle(self.image, RED, self.rect.center, self.radius)
+
 
        self.sprites_jump=player_jump
        self.current_sprite_jump = 1
@@ -230,7 +231,7 @@ class obstacle(pygame.sprite.Sprite):
         self.current_sprite = randint(0,3)
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
-        self.radius = int(self.rect.width / 3)
+        self.radius = int(self.rect.width / 2.2)
         pygame.draw.circle(self.image,RED,self.rect.center, self.radius)
         y1=randint(0,2)*150+600
         self.rect.bottomleft = (randint(970,1000000),y1)
@@ -288,7 +289,7 @@ while running:
     all_sprites.update()
 
     #check to see if hit
-    hits = pygame.sprite.spritecollide(player, obstacles, False)
+    hits = pygame.sprite.spritecollide(player, obstacles, False, pygame.sprite.collide_circle)
     if hits:
         running = False
 
