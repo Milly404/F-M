@@ -21,12 +21,14 @@ y1 = 530
 y2 = 675
 y3 = 830
 BLACK = 0,0,0
-RED = 225,0,0
 
 #images 照片
 #find the folder of images 找到我们可爱的照片文件夹
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder,"img")
+
+menu = pygame.image.load(os.path.join(img_folder,"menu.png"))
+menu_rect = menu.get_rect()
 
 #background 背景照片导入
 bg1 = pygame.image.load(os.path.join(img_folder,"background left.png"))
@@ -77,6 +79,22 @@ clock = pygame.time.Clock()
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("FM207") #give the game a name 给它个名字
 
+font = pygame.font.SysFont('Arial', 30)
+
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+
+def show_go_screen():
+    screen.blit(menu, menu_rect)
+    draw_text('Press (A) to start', font, (45, 95, 204), screen, 514, 658)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+
+
 def bg_move():
 
     global x1,x2
@@ -94,6 +112,10 @@ def bg_move():
 
     return x1, x2
 
+def bouncing_rect():
+    player_rect = pygame.Rect(139, 675, 195, 240)
+    obstacle_rect = pygame.Rect()
+
 #setup player
 class Player(pygame.sprite.Sprite):
    #sprite for the player
@@ -110,14 +132,13 @@ class Player(pygame.sprite.Sprite):
        self.current_sprite = 0
        self.image = self.sprites[self.current_sprite]
        self.rect = self.image.get_rect()
-       self.radius = int(self.rect.width / 2.2)
-       pygame.draw.circle(self.image, RED, self.rect.center, self.radius)
-
+       self.radius = int(self.rect.width / 2.4)
 
        self.sprites_jump=player_jump
        self.current_sprite_jump = 1
        self.image = self.sprites_jump[self.current_sprite_jump]
        self.rect = self.image.get_rect()
+       self.allow_jump=False
 
        self.rect.center=139,602
        self.y_speed=1
@@ -141,7 +162,6 @@ class Player(pygame.sprite.Sprite):
        self.image = self.sprites[int(self.current_sprite)]
 
    def jump(self,speed):
-       self.allow_jump=False
 
        global FPS
 
@@ -154,8 +174,6 @@ class Player(pygame.sprite.Sprite):
        if int(self.current_sprite_jump) >= len(self.sprites_jump):
            self.current_sprite_jump = 0
        self.image = self.sprites_jump[int(self.current_sprite_jump)]
-
-
 
    def update(self):
 
@@ -190,8 +208,18 @@ class Player(pygame.sprite.Sprite):
            self.rect.bottom = y3
 
        if p1.is_button_just_pressed("a"):
+
+           self.rect.top=self.rect.top-100
+           self.player_sj = pygame.time.get_ticks()
+           print (self.player_sj)
            self.jump(1)
-           self.rect.bottom-=30
+
+           self.allow_jump = True
+
+       if self.allow_jump==True and pygame.time.get_ticks()-self.player_sj<=1300:
+            self.rect.top = self.rect.top + 100
+            self.allow_jump=False
+
 
        # if event.type==pygame.KEYDOWN:
        #     if event.key==pygame.K_UP:
@@ -231,9 +259,8 @@ class obstacle(pygame.sprite.Sprite):
         self.current_sprite = randint(0,3)
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
-        self.radius = int(self.rect.width / 2.2)
-        pygame.draw.circle(self.image,RED,self.rect.center, self.radius)
-        y1=randint(0,2)*150+600
+        self.radius = int(self.rect.width / 2.5)
+        y1=randint(0,2)*150+560
         self.rect.bottomleft = (randint(970,1000000),y1)
         self.start_time=pygame.time.get_ticks()
 
@@ -242,20 +269,24 @@ class obstacle(pygame.sprite.Sprite):
             self.start_time=False
         self.rect.x-=5
 
-all_sprites=pygame.sprite.Group() #group all of them
-obstacles = pygame.sprite.Group()
 
-for Obstacle in range(1,10000):
-    Obstacle=obstacle()
-    all_sprites.add(Obstacle) #add obstacle
-    obstacles.add(Obstacle)
 
-player=Player()
-all_sprites.add(player) #add player1
 
+game_over = True
 running = True
 #run game 开始冲冲冲
 while running:
+    if game_over:
+        show_go_screen()
+        game_over = False
+        all_sprites = pygame.sprite.Group()  # group all of them
+        obstacles = pygame.sprite.Group()
+        for Obstacle in range(1, 10000):
+            Obstacle = obstacle()
+            all_sprites.add(Obstacle)  # add obstacle
+            obstacles.add(Obstacle)
+        player = Player()
+        all_sprites.add(player)  # add player1
 
     clock.tick(FPS)
 
@@ -291,7 +322,8 @@ while running:
     #check to see if hit
     hits = pygame.sprite.spritecollide(player, obstacles, False, pygame.sprite.collide_circle)
     if hits:
-        running = False
+        game_over = True
+
 
     all_sprites.draw(screen)
 
