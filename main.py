@@ -93,6 +93,10 @@ def bg_move():
 
     return x1, x2
 
+def bouncing_rect():
+    player_rect = pygame.Rect(139, 675, 195, 240)
+    obstacle_rect = pygame.Rect()
+
 #setup player
 class Player(pygame.sprite.Sprite):
    #sprite for the player
@@ -114,6 +118,7 @@ class Player(pygame.sprite.Sprite):
        self.current_sprite_jump = 1
        self.image = self.sprites_jump[self.current_sprite_jump]
        self.rect = self.image.get_rect()
+       self.allow_jump=False
 
        self.rect.center=139,602
        self.y_speed=1
@@ -137,7 +142,6 @@ class Player(pygame.sprite.Sprite):
        self.image = self.sprites[int(self.current_sprite)]
 
    def jump(self,speed):
-       self.allow_jump=False
 
        global FPS
 
@@ -150,8 +154,6 @@ class Player(pygame.sprite.Sprite):
        if int(self.current_sprite_jump) >= len(self.sprites_jump):
            self.current_sprite_jump = 0
        self.image = self.sprites_jump[int(self.current_sprite_jump)]
-
-
 
    def update(self):
 
@@ -186,8 +188,18 @@ class Player(pygame.sprite.Sprite):
            self.rect.bottom = y3
 
        if p1.is_button_just_pressed("a"):
+
+           self.rect.top=self.rect.top-100
+           self.player_sj = pygame.time.get_ticks()
+           print (self.player_sj)
            self.jump(1)
-           self.rect.bottom-=30
+
+           self.allow_jump = True
+
+       if self.allow_jump==True and pygame.time.get_ticks()-self.player_sj<=1300:
+            self.rect.top = self.rect.top + 100
+            self.allow_jump=False
+
 
        # if event.type==pygame.KEYDOWN:
        #     if event.key==pygame.K_UP:
