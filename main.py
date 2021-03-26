@@ -250,18 +250,19 @@ class obstacle(pygame.sprite.Sprite):
 
 
 all_sprites=pygame.sprite.Group() #group all of them
+obstacles = pygame.sprite.Group()
 
 for Obstacle in range(1,10000):
     Obstacle=obstacle()
     all_sprites.add(Obstacle) #add obstacle
+    obstacles.add(Obstacle)
 
 player=Player()
 all_sprites.add(player) #add player1
 
-
-
+running = True
 #run game 开始冲冲冲
-while True:
+while running:
 
     clock.tick(FPS)
 
@@ -293,6 +294,12 @@ while True:
 
     #打印人物
     all_sprites.update()
+
+    #check to see if hit
+    hits = pygame.sprite.spritecollide(player, obstacles, False)
+    if hits:
+        running = False
+
     all_sprites.draw(screen)
 
     pygame.display.update()
