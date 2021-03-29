@@ -100,6 +100,19 @@ def show_go_screen():
             if event.type == pygame.KEYUP:
                 waiting = False
 
+def Game_over():
+    screen.fill(BLACK)
+    draw_text('GAME OVER', font, (45,95,204), screen, 450, 400)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYUP:
+                waiting = False
+
 def bg_move():
 
     global x1,x2
@@ -116,10 +129,6 @@ def bg_move():
         x2 = 1200
 
     return x1, x2
-
-def bouncing_rect():
-    player_rect = pygame.Rect(139, 675, 195, 240)
-    obstacle_rect = pygame.Rect()
 
 #setup player
 class Player(pygame.sprite.Sprite):
@@ -274,9 +283,6 @@ class obstacle(pygame.sprite.Sprite):
             self.start_time=False
         self.rect.x-=5
 
-
-
-
 game_over = True
 running = True
 #run game 开始冲冲冲
@@ -327,8 +333,9 @@ while running:
     #check to see if hit
     hits = pygame.sprite.spritecollide(player, obstacles, False, pygame.sprite.collide_circle)
     if hits:
+        Game_over()
+        #sleep(3)
         game_over = True
-
 
     all_sprites.draw(screen)
 
