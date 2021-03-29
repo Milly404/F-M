@@ -79,6 +79,27 @@ clock = pygame.time.Clock()
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("FM207") #give the game a name 给它个名字
 
+font = pygame.font.SysFont('Arial', 45)
+
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+
+def show_go_screen():
+    screen.blit(menu, menu_rect)
+    draw_text('Press  (A)  to  start', font, (45, 95, 204), screen, 420, 658)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYUP:
+                waiting = False
+
 def bg_move():
 
     global x1,x2
@@ -254,20 +275,23 @@ class obstacle(pygame.sprite.Sprite):
         self.rect.x-=5
 
 
-all_sprites=pygame.sprite.Group() #group all of them
-obstacles = pygame.sprite.Group()
 
-for Obstacle in range(1,10000):
-    Obstacle=obstacle()
-    all_sprites.add(Obstacle) #add obstacle
-    obstacles.add(Obstacle)
 
-player=Player()
-all_sprites.add(player) #add player1
-
+game_over = True
 running = True
 #run game 开始冲冲冲
 while running:
+    if game_over:
+        show_go_screen()
+        game_over = False
+        all_sprites = pygame.sprite.Group()  # group all of them
+        obstacles = pygame.sprite.Group()
+        for Obstacle in range(1, 10000):
+            Obstacle = obstacle()
+            all_sprites.add(Obstacle)  # add obstacle
+            obstacles.add(Obstacle)
+        player = Player()
+        all_sprites.add(player)  # add player1
 
     clock.tick(FPS)
 
@@ -303,7 +327,8 @@ while running:
     #check to see if hit
     hits = pygame.sprite.spritecollide(player, obstacles, False, pygame.sprite.collide_circle)
     if hits:
-        running = False
+        game_over = True
+
 
     all_sprites.draw(screen)
 
