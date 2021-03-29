@@ -102,7 +102,7 @@ def show_go_screen():
 
 def Game_over():
     screen.fill(BLACK)
-    draw_text('GAME OVER', font, (45,95,204), screen, 450, 400)
+    draw_text('GAME OVER', font, (225,225,225), screen, 450, 400)
     pygame.display.flip()
     waiting = True
     while waiting:
