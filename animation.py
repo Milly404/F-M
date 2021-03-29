@@ -79,7 +79,7 @@ clock = pygame.time.Clock()
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("FM207") #give the game a name 给它个名字
 
-font = pygame.font.SysFont('Arial', 30)
+font = pygame.font.SysFont('Arial', 45)
 
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
@@ -89,11 +89,16 @@ def draw_text(text, font, color, surface, x, y):
 
 def show_go_screen():
     screen.blit(menu, menu_rect)
-    draw_text('Press (A) to start', font, (45, 95, 204), screen, 514, 658)
+    draw_text('Press  (A)  to  start', font, (45, 95, 204), screen, 420, 658)
     pygame.display.flip()
     waiting = True
     while waiting:
-
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYUP:
+                waiting = False
 
 def bg_move():
 
