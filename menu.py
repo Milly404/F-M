@@ -1,77 +1,71 @@
-import pygame, sys
-import os
+import pygame, sys, time  # 声明 导入需要的模块
 
-game_folder = os.path.dirname(__file__)
-img_folder = os.path.join(game_folder,"img")
-
-menu = pygame.image.load(os.path.join(img_folder,"menu.png"))
-menu_rect = menu.get_rect()
-
-mainClock = pygame.time.Clock()
 from pygame.locals import *
 
-pygame.init()
-pygame.display.set_caption('game base')
-screen = pygame.display.set_mode((1200, 900), 0, 32)
+pygame.init()  # 初始化pygame
 
-font = pygame.font.SysFont('Arial', 45)
+DISPLAYSURF = pygame.display.set_mode((400, 600))  # 设置窗口的大小，单位为像素
 
-def draw_text(text, font, color, surface, x, y):
-    textobj = font.render(text, 1, color)
-    textrect = textobj.get_rect()
-    textrect.topleft = (x, y)
-    surface.blit(textobj, textrect)
+pygame.display.set_caption('Clock')  # 设置窗口的标题
 
-click = False
+# 定义几个颜色
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 128)
 
-def main_menu():
-    while True:
-        screen.blit(menu,menu_rect)
+DISPLAYSURF.fill(WHITE)  # 设置背景
 
-        mx, my = pygame.mouse.get_pos()
+# 初始化计时器
+counts = 0
 
-        button_1 = pygame.Rect(503, 653, 140, 65)
+# 自定义计时事件
+COUNT = pygame.USEREVENT + 1
 
-        if button_1.collidepoint((mx, my)):
-            if click:
-                game()
-
-        pygame.draw.rect(screen, (194, 221, 239), button_1)
-        draw_text('START', font, (45, 95, 204), screen, 514, 658)
-
-        click = False
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
-            if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    click = True
-
-        pygame.display.update()
-        mainClock.tick(60)
+# 每隔1秒发送一次自定义事件
+pygame.time.set_timer(COUNT, 1000)
 
 
-def game():
-    running = True
-    while running:
-        screen.fill((0, 0, 0))
+# 抽象出一个方法用来绘制Text在屏幕上
+def showText(fontObj, text, x, y):
+    textSurfaceObj = fontObj.render(text, True, GREEN, WHITE)  # 配置要显示的文字
 
-        draw_text('game', font, (255, 255, 255), screen, 20, 20)
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    running = False
+    textRectObj = textSurfaceObj.get_rect()  # 获得要显示的对象的rect
 
-        pygame.display.update()
-        mainClock.tick(60)
+    textRectObj.center = (x, y)  # 设置显示对象的坐标
+
+    DISPLAYSURF.blit(textSurfaceObj, textRectObj)  # 绘制字体
 
 
-main_menu()
+fontbigObj = pygame.font.SysFont('Arial', 45)  # 通过字体文件获得字体对象
+
+fontminObj = pygame.font.SysFont('Arial', 45)  # 通过字体文件获得字体对象
+
+showText(fontminObj, "Time:", 100, 100)
+
+showText(fontminObj, "Count:", 100, 300)
+
+while True:  # 程序主循环
+
+    now = time.ctime()  # 获得系统当前时间
+
+    clock = now[11:19]  # 格式化形式
+
+    showText(fontbigObj, clock, 200, 150)
+
+    for event in pygame.event.get():  # 获取事件
+
+        if event.type == QUIT:  # 判断事件是否为退出事件
+
+            pygame.quit()  # 退出pygame
+
+            sys.exit()  # 退出系统
+
+        if event.type == COUNT:  # 判断事件是否为计时事件
+
+            counts = counts + 1
+
+            countstext = str(counts)
+
+            showText(fontbigObj, countstext, 200, 350)
+
+    pygame.display.update()  # 绘制屏幕内容

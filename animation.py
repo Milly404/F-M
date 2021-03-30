@@ -107,7 +107,7 @@ def bg_move():
     x1 -= 3
     x2 -= 3
 
-    screen.blit(bg1, (x1,0))
+    screen.blit(bg1, (x1, 0))
     screen.blit(bg2, (x2, 0))
 
     if x1 < -1200:
