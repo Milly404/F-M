@@ -22,6 +22,8 @@ y2 = 675
 y3 = 830
 BLACK = 0,0,0
 
+timer=""
+
 #images 照片
 #find the folder of images 找到我们可爱的照片文件夹
 game_folder = os.path.dirname(__file__)
@@ -72,14 +74,22 @@ obstacle_img.append(pygame.image.load('img\PanTao.PNG'))
 
 #initialize pygame and create window 创造窗口
 pygame.init()
-clock = pygame.time.Clock()
 #screen=pygame.display.set_mode(size, pygame.RESIZABLE) #可移动的屏幕有机会再说
 #screen=pygame.display.set_mode(size, pygame.NOFRAME)#无边框
 #screen=pygame.display.set_mode(size, pygame.FULLSCREEN) #诶嘿搞个全屏就快乐了
 screen=pygame.display.set_mode(size)
 pygame.display.set_caption("FM207") #give the game a name 给它个名字
 
+clock = pygame.time.Clock()
 font = pygame.font.SysFont('Arial', 45)
+frame_count=0
+frame_rate=80
+frame_time=90
+
+text=font.render(timer,True,BLACK)
+screen.blit(text,[1150,100])
+
+clock.tick(60)
 
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
@@ -282,6 +292,26 @@ class obstacle(pygame.sprite.Sprite):
         if self.start_time and pygame.time.get_ticks()-self.start_time>2000:
             self.start_time=False
         self.rect.x-=5
+
+#Timer
+total_seconds = frame_count // frame_rate
+minutes = total_seconds // 60
+seconds = total_seconds % 60
+output_string = "Time:{0:02}:{1:02}".format(minutes,seconds)
+timer=output_string
+
+total_seconds = start_time-(frame_count // frame_rate)
+if total_seconds <0:
+    total_seconds =0
+    minutes = total_seconds //60
+    seconds = total_seconds % 60
+
+output_string = "Time left: {0:02}:{1:02}".format(minutes,seconds)
+text = font.render(output_string,True,BLACK)
+
+frame_count+=3
+clock.tick(frame_rate)
+pygame.display,flip()
 
 game_over = True
 running = True
