@@ -2,7 +2,7 @@
 # FM207
 # Mar 4 2021
 
-import pygame, sys
+import pygame, sys, time
 import random
 import os
 from random import random, randint, seed

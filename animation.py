@@ -2,7 +2,7 @@
 # FM207
 # Mar 4 2021
 
-import pygame,sys
+import pygame, sys, time
 import random
 import os
 from random import random, randint, seed
@@ -21,6 +21,8 @@ y1 = 530
 y2 = 675
 y3 = 830
 BLACK = 0,0,0
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
 
 #images 照片
 #find the folder of images 找到我们可爱的照片文件夹
@@ -87,6 +89,16 @@ def draw_text(text, font, color, surface, x, y):
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
 
+# 抽象出一个方法用来绘制Text在屏幕上
+def showText(fontObj, text, x, y):
+    textSurfaceObj = fontObj.render(text, True, GREEN, WHITE)  # 配置要显示的文字
+    textRectObj = textSurfaceObj.get_rect()  # 获得要显示的对象的rect
+    textRectObj.center = (x, y)  # 设置显示对象的坐标
+    screen.blit(textSurfaceObj, textRectObj)  # 绘制字体
+
+fontbigObj = pygame.font.SysFont('Arial', 30)  # 通过字体文件获得字体对象
+fontminObj = pygame.font.SysFont('Arial', 20)  # 通过字体文件获得字体对象
+
 def show_go_screen():
     screen.blit(menu, menu_rect)
     draw_text('Press  (A)  to  start', font, (45, 95, 204), screen, 420, 658)
@@ -100,14 +112,29 @@ def show_go_screen():
             if event.type == pygame.KEYUP:
                 waiting = False
 
+
+def Game_over():
+    screen.fill(BLACK)
+    draw_text('GAME OVER', font, (225,225,225), screen, 450, 400)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYUP:
+                waiting = False
+
+
 def bg_move():
 
     global x1,x2
 
-    x1 -= 3
-    x2 -= 3
+    x1 -= 4
+    x2 -= 4
 
-    screen.blit(bg1, (x1, 0))
+    screen.blit(bg1, (x1,0))
     screen.blit(bg2, (x2, 0))
 
     if x1 < -1200:
@@ -116,10 +143,6 @@ def bg_move():
         x2 = 1200
 
     return x1, x2
-
-def bouncing_rect():
-    player_rect = pygame.Rect(139, 675, 195, 240)
-    obstacle_rect = pygame.Rect()
 
 #setup player
 class Player(pygame.sprite.Sprite):
@@ -138,7 +161,7 @@ class Player(pygame.sprite.Sprite):
        self.image = self.sprites[self.current_sprite]
        self.rect = self.image.get_rect()
        self.radius = int(self.rect.width / 2.4)
-
+       
        self.sprites_jump=player_jump
        self.current_sprite_jump = 1
        self.image = self.sprites_jump[self.current_sprite_jump]
@@ -274,9 +297,12 @@ class obstacle(pygame.sprite.Sprite):
             self.start_time=False
         self.rect.x-=5
 
-
-
-
+# 初始化计时器
+counts = 0
+# 自定义计时事件
+COUNT = pygame.USEREVENT + 1
+# 每隔1秒发送一次自定义事件
+pygame.time.set_timer(COUNT, 1000)
 game_over = True
 running = True
 #run game 开始冲冲冲
@@ -327,10 +353,16 @@ while running:
     #check to see if hit
     hits = pygame.sprite.spritecollide(player, obstacles, False, pygame.sprite.collide_circle)
     if hits:
+        Game_over()
+        #sleep(3)
         game_over = True
 
-
     all_sprites.draw(screen)
+    for event in pygame.event.get():  # 获取事件
+        if event.type == COUNT:  # 判断事件是否为计时事件
+            counts = counts + 1
+            countstext = str(counts)
+            showText(fontbigObj, countstext, 600, 50)
 
     pygame.display.update()
 pygame.quit()
