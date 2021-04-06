@@ -17,10 +17,12 @@ vInfo = pygame.display.Info()
 size = WIDTH, HEIGHT = 1200,900 #固定大小
 FPS=30
 VEL=10
-y1 = 530
-y2 = 675
-y3 = 830
-BLACK = 0,0,0
+#jia le 50
+y1 = 580
+y2 = 725
+y3 = 880
+
+BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 
@@ -69,8 +71,8 @@ player_jump.append(pygame.image.load('img\WuKong 6.png'))
 obstacle_img = []
 obstacle_img.append(pygame.image.load('img\Stone.PNG'))
 obstacle_img.append(pygame.image.load('img\HuLu.PNG'))
-obstacle_img.append(pygame.image.load('img\JingJiaoDaWang.PNG'))
-obstacle_img.append(pygame.image.load('img\PanTao.PNG'))
+#obstacle_img.append(pygame.image.load('img\JingJiaoDaWang.PNG'))
+#obstacle_img.append(pygame.image.load('img\PanTao.PNG'))
 
 #initialize pygame and create window 创造窗口
 pygame.init()
@@ -160,7 +162,10 @@ class Player(pygame.sprite.Sprite):
        self.current_sprite = 0
        self.image = self.sprites[self.current_sprite]
        self.rect = self.image.get_rect()
-       self.radius = int(self.rect.width / 2.4)
+
+       self.radius = int(self.rect.width / 3)
+       #self.mask = pygame.mask.from_surface(self.image)
+       pygame.draw.circle(self.image,GREEN,self.rect.center,self.radius)
        
        self.sprites_jump=player_jump
        self.current_sprite_jump = 1
@@ -168,11 +173,11 @@ class Player(pygame.sprite.Sprite):
        self.rect = self.image.get_rect()
        self.allow_jump=False
 
-       self.rect.center=139,602
-       self.y_speed=1
-       self.rect.bottom=830
-       self.level=2
-       self.levelChange=10
+       self.rect.center = 139, 602
+       self.y_speed = 1
+       self.rect.bottom = 830
+       self.level = 2
+       self.levelChange = 10
        self.joystick_pressed = False
 
    def run_animation(self,speed):
@@ -284,16 +289,18 @@ class obstacle(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.sprites = obstacle_img
-        self.current_sprite = randint(0,3)
+        self.current_sprite = randint(0,1)
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
-        self.radius = int(self.rect.width / 2.5)
-        y1=randint(0,2)*150+560
+        self.radius = int(self.rect.width / 3)
+        pygame.draw.circle(self.image, GREEN, self.rect.center, self.radius)
+        #yuan lai shi 560
+        y1 = randint(0,2)*150+540
         self.rect.bottomleft = (randint(970,1000000),y1)
         self.start_time=pygame.time.get_ticks()
 
     def update(self):
-        if self.start_time and pygame.time.get_ticks()-self.start_time>2000:
+        if self.start_time and pygame.time.get_ticks()-self.start_time > 2000:
             self.start_time=False
         self.rect.x-=5
 
@@ -352,6 +359,7 @@ while running:
 
     #check to see if hit
     hits = pygame.sprite.spritecollide(player, obstacles, False, pygame.sprite.collide_circle)
+    #if circle_x < rect_x + circle_width and circle_x + rect_width > rect_x:
     if hits:
         Game_over()
         #sleep(3)
