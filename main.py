@@ -201,6 +201,8 @@ class Player(pygame.sprite.Sprite):
 
    def update(self):
 
+       jump = False
+
        self.run_animation(1)
 
        self.y_speed=0
@@ -231,18 +233,23 @@ class Player(pygame.sprite.Sprite):
        else:
            self.rect.bottom = y3
 
-       if p1.is_button_just_pressed("a"):
+       if jump is False and p1.is_button_just_pressed("a"):
+           jump = True
 
-           self.rect.top=self.rect.top-100
-           self.player_sj = pygame.time.get_ticks()
-           print (self.player_sj)
+       if jump is True:
+           # y -= vel_y
+           # vel_y -= 1
+           # if vel_y < -10:
+           # jump = False
+           # vel_y = 10
+           # if p1.is_button_just_pressed("a"):
+
+           self.rect.top = self.rect.top - 150
+           # self.player_sj = pygame.time.get_ticks()
+           # print (self.player_sj)
            self.jump(1)
 
-           self.allow_jump = True
-
-       if self.allow_jump==True and pygame.time.get_ticks()-self.player_sj<=1300:
-            self.rect.top = self.rect.top + 100
-            self.allow_jump=False
+       pygame.time.delay(100)
 
 
        # if event.type==pygame.KEYDOWN:
