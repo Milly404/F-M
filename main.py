@@ -15,14 +15,14 @@ pygame.init()
 vInfo = pygame.display.Info()
 #size = WIDTH, HEIGHT = vInfo.current_w, vInfo.current_h #适合大小
 size = WIDTH, HEIGHT = 1200,900 #固定大小
-FPS=30
-VEL=10
+FPS = 30
+VEL = 10
 y1 = 530
 y2 = 675
 y3 = 830
-BLACK = 0,0,0
+BLACK = (0,0,0)
 
-timer=""
+timer = ""
 
 #images 照片
 #find the folder of images 找到我们可爱的照片文件夹
@@ -82,9 +82,9 @@ pygame.display.set_caption("FM207") #give the game a name 给它个名字
 
 clock = pygame.time.Clock()
 font = pygame.font.SysFont('Arial', 45)
-frame_count=0
-frame_rate=80
-frame_time=90
+frame_count = 0
+frame_rate = 80
+frame_time = 90
 
 text=font.render(timer,True,BLACK)
 screen.blit(text,[1150,100])
@@ -201,6 +201,8 @@ class Player(pygame.sprite.Sprite):
 
    def update(self):
 
+       jump = False
+
        self.run_animation(1)
 
        self.y_speed=0
@@ -231,18 +233,23 @@ class Player(pygame.sprite.Sprite):
        else:
            self.rect.bottom = y3
 
-       if p1.is_button_just_pressed("a"):
+       if jump is False and p1.is_button_just_pressed("a"):
+           jump = True
 
-           self.rect.top=self.rect.top-100
-           self.player_sj = pygame.time.get_ticks()
-           print (self.player_sj)
+       if jump is True:
+           # y -= vel_y
+           # vel_y -= 1
+           # if vel_y < -10:
+           # jump = False
+           # vel_y = 10
+           # if p1.is_button_just_pressed("a"):
+
+           self.rect.top = self.rect.top - 150
+           # self.player_sj = pygame.time.get_ticks()
+           # print (self.player_sj)
            self.jump(1)
 
-           self.allow_jump = True
-
-       if self.allow_jump==True and pygame.time.get_ticks()-self.player_sj<=1300:
-            self.rect.top = self.rect.top + 100
-            self.allow_jump=False
+       pygame.time.delay(100)
 
 
        # if event.type==pygame.KEYDOWN:
