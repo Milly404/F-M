@@ -19,6 +19,8 @@ VEL = 10
 game_over = True
 running = True
 BLACK=0,0,0
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
 font = pygame.font.SysFont('Arial', 45)
 
 # images
@@ -68,9 +70,19 @@ def draw_text(text, font, color, surface, x, y): #show the text
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
 
+# 抽象出一个方法用来绘制Text在屏幕上
+def showText(fontObj, text, x, y):
+    textSurfaceObj = fontObj.render(text, True, GREEN, WHITE)  # 配置要显示的文字
+    textRectObj = textSurfaceObj.get_rect()  # 获得要显示的对象的rect
+    textRectObj.center = (x, y)  # 设置显示对象的坐标
+    screen.blit(textSurfaceObj, textRectObj)  # 绘制字体
+
+fontbigObj = pygame.font.SysFont('Arial', 30)  # 通过字体文件获得字体对象
+fontminObj = pygame.font.SysFont('Arial', 20)  # 通过字体文件获得字体对象
+
 def show_go_screen(): #start menu
     screen.blit(menu, menu_rect)
-    draw_text('Press  to  start', font, (45, 95, 204), screen, 420, 658)
+    draw_text('Press a key to start', font, (45, 95, 204), screen, 420, 658)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -98,8 +110,8 @@ def bg_move(): #bargound moving
 
     global x1,x2
 
-    x1 -= 3
-    x2 -= 3
+    x1 -= 4
+    x2 -= 4
 
     screen.blit(bg1, (x1, 0))
     screen.blit(bg2, (x2, 0))
@@ -148,7 +160,22 @@ class Player(pygame.sprite.Sprite): #add the player
            self.current_sprite = 0
        self.image = self.sprites[int(self.current_sprite)]
 
+   def jump(self,speed):
+
+       global FPS
+
+       self.animation_counter += 1
+
+       if self.animation_counter == self.frame_ratio:
+           self.animation_counter = 0
+           self.current_sprite_jump += speed
+
+       if int(self.current_sprite_jump) >= len(self.sprites_jump):
+           self.current_sprite_jump = 0
+       self.image = self.sprites_jump[int(self.current_sprite_jump)]
+
    def update(self):
+       jump = False
 
        self.run_animation(1)
 
@@ -176,6 +203,15 @@ class Player(pygame.sprite.Sprite): #add the player
        else:
            self.rect.bottom = y3
 
+       if jump is False and p1.is_button_just_pressed("a"):
+           jump = True
+
+       if jump is True:
+           self.rect.top = self.rect.top - 150
+           self.jump(1)
+
+       pygame.time.delay(100)
+
 class obstacle(pygame.sprite.Sprite): #add the obstacle
 
     def __init__(self):
@@ -201,9 +237,18 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("FM207")  # give the game a name
 
-# run game
-while True:
 
+# 初始化计时器
+counts = 0
+# 自定义计时事件
+COUNT = pygame.USEREVENT + 1
+# 每隔1秒发送一次自定义事件
+pygame.time.set_timer(COUNT, 1000)
+
+game_over = True
+running = True
+#run game 开始冲冲冲
+while running:
     if game_over:
         show_go_screen()
         game_over = False
@@ -220,28 +265,32 @@ while True:
 
     p1.update()
 
-    for event in pygame.event.get(): # close the window
+    for event in pygame.event.get():
+        #close the window
         if event.type == pygame.QUIT:
             sys.exit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:  # close the window with Esc
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_ESCAPE: #close the window with Esc
                 sys.exit()
 
-    # draw background
     x1, x2 = bg_move()
-
-    # draw payer
     all_sprites.update()
 
 
     #check to see if hit
     hits = pygame.sprite.spritecollide(player, obstacles, False, pygame.sprite.collide_circle)
+    #if circle_x < rect_x + circle_width and circle_x + rect_width > rect_x:
     if hits:
         Game_over()
+        #sleep(3)
         game_over = True
 
     all_sprites.draw(screen)
+    for event in pygame.event.get():  # 获取事件
+        if event.type == COUNT:  # 判断事件是否为计时事件
+            counts = counts + 1
+            countstext = str(counts)
+            showText(fontbigObj, countstext, 600, 50)
 
     pygame.display.update()
-    pygame.display.flip()
 pygame.quit()
