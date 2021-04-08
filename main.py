@@ -289,6 +289,22 @@ class obstacle(pygame.sprite.Sprite):
         self.start_time=pygame.time.get_ticks()
 
     def update(self):
+
+        if self.rect.bottom == 560:
+            level1 = [1,0]
+            level1.append(self.current_sprite)
+            print(level1)
+
+        if self.rect.bottom == 710:
+            level2 = [2,0]
+            level2.append(self.current_sprite)
+            print(level2)
+
+        if self.rect.bottom == 860:
+            level3 = [3,0]
+            level3.append(self.current_sprite)
+            print(level3)
+
         if self.start_time and pygame.time.get_ticks()-self.start_time>2000:
             self.start_time=False
         self.rect.x-=5
@@ -300,7 +316,7 @@ seconds = total_seconds % 60
 output_string = "Time:{0:02}:{1:02}".format(minutes,seconds)
 timer=output_string
 
-total_seconds = start_time-(frame_count // frame_rate)
+#total_seconds = start_time-(frame_count // frame_rate)
 if total_seconds <0:
     total_seconds =0
     minutes = total_seconds //60
@@ -311,7 +327,7 @@ text = font.render(output_string,True,BLACK)
 
 frame_count+=3
 clock.tick(frame_rate)
-pygame.display,flip()
+#pygame.display,flip()
 
 game_over = True
 running = True

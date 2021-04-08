@@ -18,6 +18,7 @@ FPS = 30
 VEL = 10
 game_over = True
 running = True
+BLACK=0,0,0
 font = pygame.font.SysFont('Arial', 45)
 
 # images
@@ -69,7 +70,20 @@ def draw_text(text, font, color, surface, x, y): #show the text
 
 def show_go_screen(): #start menu
     screen.blit(menu, menu_rect)
-    draw_text('Press  (A)  to  start', font, (45, 95, 204), screen, 420, 658)
+    draw_text('Press  to  start', font, (45, 95, 204), screen, 420, 658)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYUP:
+                waiting = False
+
+def Game_over():
+    screen.fill(BLACK)
+    draw_text('GAME OVER', font, (225,225,225), screen, 450, 400)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -223,6 +237,7 @@ while True:
     #check to see if hit
     hits = pygame.sprite.spritecollide(player, obstacles, False, pygame.sprite.collide_circle)
     if hits:
+        Game_over()
         game_over = True
 
     all_sprites.draw(screen)
